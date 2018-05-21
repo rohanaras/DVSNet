@@ -60,7 +60,7 @@ class DeepLab(object):
         data_dict = np.load(data_path).item()
         for op_name in data_dict:
             with tf.variable_scope(op_name, reuse=True):
-                for param_name, data in data_dict[op_name].iteritems():
+                for param_name, data in list(data_dict[op_name].items()):
                     try:
                         var = tf.get_variable(param_name)
                         session.run(var.assign(data))
@@ -75,7 +75,7 @@ class DeepLab(object):
         assert len(args) != 0
         self.terminals = []
         for fed_layer in args:
-            if isinstance(fed_layer, basestring):
+            if isinstance(fed_layer, str):
                 try:
                     fed_layer = self.layers[fed_layer]
                 except KeyError:
@@ -91,7 +91,7 @@ class DeepLab(object):
         '''Returns an index-suffixed unique name for the given prefix.
         This is used for auto-generating layer names based on the type-prefix.
         '''
-        ident = sum(t.startswith(prefix) for t, _ in self.layers.items()) + 1
+        ident = sum(t.startswith(prefix) for t, _ in list(self.layers.items())) + 1
         return '%s_%d' % (prefix, ident)
 
     def make_var(self, name, shape):
@@ -232,7 +232,7 @@ class DeepLab(object):
 
     @layer
     def softmax(self, input, name):
-        input_shape = map(lambda v: v.value, input.get_shape())
+        input_shape = [v.value for v in input.get_shape()]
         if len(input_shape) > 2:
             # For certain models (like NiN), the singleton spatial dimensions
             # need to be explicitly squeezed, since they're not broadcast-able
@@ -262,14 +262,14 @@ class DeepLab(object):
 
     @layer
     def resize_bilinear(self, input, size, name):
-        print('resize {}'.format(size))
+        print(('resize {}'.format(size)))
         return tf.image.resize_bilinear(input, size=size, name=name)
 
     @layer
     def up_sample(self, input, factor, name):
         sh = input.get_shape().as_list()
         h, w = sh[1:3]
-        print(h*2, w*2)        
+        print((h*2, w*2))        
         return tf.image.resize_bilinear(input, size=[h*2, w*2], name=name)
         
     @layer

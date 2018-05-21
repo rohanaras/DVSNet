@@ -1,3 +1,5 @@
 checkpoint/
 video/
 train/*/
+.idea/
+.ipynb_checkpoints/

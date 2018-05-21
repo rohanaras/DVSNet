@@ -1,4 +1,4 @@
-from network import DeepLab
+from .network import DeepLab
 import tensorflow as tf
 
 class DeepLab_Fast(DeepLab):

@@ -93,11 +93,11 @@ def read_flow(filename):
     data2d = None
 
     if 202021.25 != magic:
-        print 'Magic number incorrect. Invalid .flo file'
+        print('Magic number incorrect. Invalid .flo file')
     else:
         w = np.fromfile(f, np.int32, count=1)
         h = np.fromfile(f, np.int32, count=1)
-        print "Reading %d x %d flo file" % (h, w)
+        print("Reading %d x %d flo file" % (h, w))
         data2d = np.fromfile(f, np.float32, count=2 * w * h)
         # reshape data into 3D array (columns, rows, channels)
         data2d = np.resize(data2d, (h[0], w[0], 2))
@@ -266,7 +266,7 @@ def flow_to_image(flow):
     rad = np.sqrt(u ** 2 + v ** 2)
     maxrad = max(-1, np.max(rad))
 
-    print "max flow: %.4f\nflow range:\nu = %.3f .. %.3f\nv = %.3f .. %.3f" % (maxrad, minu,maxu, minv, maxv)
+    print("max flow: %.4f\nflow range:\nu = %.3f .. %.3f\nv = %.3f .. %.3f" % (maxrad, minu,maxu, minv, maxv))
 
     u = u/(maxrad + np.finfo(float).eps)
     v = v/(maxrad + np.finfo(float).eps)

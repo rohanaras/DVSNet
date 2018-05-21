@@ -52,16 +52,16 @@ def antipad(tensor, evenh=True, evenw=True, num=1):
 
 def get_xyindex(h,w):
 	index_list = []
-	for i in xrange(h):
-		for j in xrange(w):
+	for i in range(h):
+		for j in range(w):
 			index_list.append([j,i])
 	return np.array(index_list)
 
 def get_batchindex(b,h,w):
 	index_list = []
-	for k in xrange(b):
-		for i in xrange(h):
-			for j in xrange(w):
+	for k in range(b):
+		for i in range(h):
+			for j in range(w):
 				index_list.append([k])
 	return np.array(index_list)
 
