@@ -18,7 +18,7 @@ def read_labeled_image_list(data_dir, data_list):
     for line in f:
         try:
             image = line[:-1].split('\n')[0]
-        except ValueError: # Adhoc for test.
+        except ValueError:  # Adhoc for test.
             image = line.strip("\n")
 
         image = data_dir+image
@@ -45,7 +45,7 @@ def read_images_from_disk(input_queue, input_size, overlap, img_mean=IMG_MEAN):
     image_file = tf.read_file(input_queue[0])
     image = tf.image.decode_image(image_file)
 
-    image = tf.cast(image,tf.float32)
+    image = tf.cast(image, tf.float32)
 
     img_r, img_g, img_b = tf.split(axis=2, num_or_size_splits=3, value=image)
     image_bgr = tf.concat(axis=2, values=[img_b, img_g, img_r])

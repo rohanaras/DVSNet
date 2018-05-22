@@ -13,12 +13,12 @@ from tools.flow_utils import warp
 from tools.image_reader import inputs
 from tools.overlap import overlap4
 
-DATA_DIRECTORY = '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/test/'  # '/data/cityscapes_dataset/cityscape_video/'
-DATA_LIST_PATH = 'tools/road01_cam_5_video_1_image_list_testimg_list.txt'  # './list/video_list0.txt'
+DATA_DIRECTORY = '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00/'  # '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/test/'
+DATA_LIST_PATH = '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00_list.txt'  # 'tools/road01_cam_5_video_1_image_list_testimg_list.txt'
 RESTORE_FROM = './checkpoint/'
 SAVE_DIR = './video/'
 NUM_CLASSES = 19
-NUM_STEPS = 136  # Number of images in the video.
+NUM_STEPS = 599  # Number of images in the video.
 OVERLAP = 64  # power of 8
 TARGET = 90.0
 input_size = [1024, 2048]  # [2710, 3384] <-- WAD image size
