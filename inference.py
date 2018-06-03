@@ -13,15 +13,15 @@ from tools.flow_utils import warp
 from tools.image_reader import inputs
 from tools.overlap import overlap4
 
-DATA_DIRECTORY = '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00/'  # '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/test/'
-DATA_LIST_PATH = '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00_list.txt'  # 'tools/road01_cam_5_video_1_image_list_testimg_list.txt'
+DATA_DIRECTORY = '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/test/' # '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00/'
+DATA_LIST_PATH = 'tools/road01_cam_5_video_1_image_list_testimg_list.txt' # '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00_list.txt'  #
 RESTORE_FROM = './checkpoint/'
 SAVE_DIR = './video/'
 NUM_CLASSES = 19
-NUM_STEPS = 599  # Number of images in the video.
+NUM_STEPS = 136  # Number of images in the video.
 OVERLAP = 64  # power of 8
 TARGET = 90.0
-input_size = [1024, 2048]  # [2710, 3384] <-- WAD image size
+input_size = [2560, 3328] # <-- WAD image size
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 
@@ -90,6 +90,11 @@ def main():
     flow_field = tf.placeholder(tf.float32, [1, height_overlap//8, width_overlap//8, 2])
     scale_field = tf.placeholder(tf.float32, [1, height_overlap//8, width_overlap//8, NUM_CLASSES])
     output = tf.placeholder(tf.uint8, [1, input_size[0], input_size[1], 1])
+
+    print('HEIGHT AND WIDTH')
+    print(height_overlap//2, width_overlap//2)
+    print(height_overlap//8, width_overlap//8)
+
 
     # Input image.
     image_batch = tf.expand_dims(image_in, 0)
@@ -210,6 +215,8 @@ def main():
         # Write result image
         mask = sess.run(pred_img, feed_dict={output: preds})
         misc.imsave(args.save_dir + 'mask' + str(step) + '.png', mask[0])
+        print('#' * 32)
+        print(type(mask))
 
     print('\nFinish!')
     print("segmentation steps:", seg_step, "flow steps:", flow_step)

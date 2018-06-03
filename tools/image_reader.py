@@ -45,6 +45,8 @@ def read_images_from_disk(input_queue, input_size, overlap, img_mean=IMG_MEAN):
     image_file = tf.read_file(input_queue[0])
     image = tf.image.decode_image(image_file)
 
+    # tf.image.resize_images(image, [1024, 2048])
+
     image = tf.cast(image, tf.float32)
 
     img_r, img_g, img_b = tf.split(axis=2, num_or_size_splits=3, value=image)
