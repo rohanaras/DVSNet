@@ -7,21 +7,23 @@ import numpy as np
 import cv2
 from scipy import misc
 
+from os import listdir
+from os.path import isfile, isdir, join
+
 from model import DeepLab_Fast, FlowNets, Decision
 from tools.img_utils import decode_labels
 from tools.flow_utils import warp
 from tools.image_reader import inputs
 from tools.overlap import overlap4
 
-DATA_DIRECTORY = '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/test/' # '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00/'
-DATA_LIST_PATH = 'tools/road01_cam_5_video_1_image_list_testimg_list.txt' # '/home/rohana/project/cityscapes/leftImg8bit/demoVideo/stuttgart_00_list.txt'  #
+DATA_DIRECTORY = '/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/train_color/'
+DATA_LIST_PATH = 'list/wad_train/'  # this now refers to a directory with multiple lists of images locations
 RESTORE_FROM = './checkpoint/'
-SAVE_DIR = './video/'
+SAVE_DIR = './video/train/'
 NUM_CLASSES = 19
-NUM_STEPS = 136  # Number of images in the video.
 OVERLAP = 64  # power of 8
 TARGET = 90.0
-input_size = [2560, 3328] # <-- WAD image size
+input_size = [2560, 3328]  # <-- WAD image size-ish
 IMG_MEAN = np.array((104.00698793, 116.66876762, 122.67891434), dtype=np.float32)
 
 
@@ -42,8 +44,6 @@ def get_arguments():
                         help="Where restore decision model parameters from.")
     parser.add_argument("--save_dir", type=str, default=SAVE_DIR,
                         help="Where to save segmented output.")
-    parser.add_argument("--num_steps", type=int, default=NUM_STEPS,
-                        help="Number of images in the video.")
     parser.add_argument("--overlap", type=int, default=OVERLAP,
                         help="Overlapping size.")
     parser.add_argument("--target", type=float, default=TARGET,
@@ -65,11 +65,8 @@ def load(saver, sess, ckpt_path):
     print("Restored model parameters from {}".format(ckpt_path))
 
 
-def main():
+def run(img_list, save_dir, num_steps, args):
     """Create the model and start the evaluation process."""
-    args = get_arguments()
-    print(args)
-
     tf.reset_default_graph()
     
     # Input size
@@ -79,7 +76,7 @@ def main():
     width_overlap = width+args.overlap
     
     # Input.
-    image_s, image_f = inputs(args.data_dir, args.data_list, 1, input_size, args.overlap)
+    image_s, image_f = inputs(args.data_dir, img_list, 1, input_size, args.overlap)
     image_s = tf.squeeze(image_s)
     image_f = tf.squeeze(image_f)
 
@@ -94,7 +91,6 @@ def main():
     print('HEIGHT AND WIDTH')
     print(height_overlap//2, width_overlap//2)
     print(height_overlap//8, width_overlap//8)
-
 
     # Input image.
     image_batch = tf.expand_dims(image_in, 0)
@@ -157,8 +153,8 @@ def main():
     # Start queue threads.
     threads = tf.train.start_queue_runners(sess=sess)
 
-    if not os.path.exists(args.save_dir):
-        os.makedirs(args.save_dir)
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
 
     # Register
     targets = [args.target, args.target, args.target, args.target]
@@ -169,7 +165,7 @@ def main():
     seg_step = 0
     flow_step = 0
 
-    for step in range(args.num_steps):
+    for step in range(num_steps):
         start_time = time.time()
         if step == 0:
             image_inputs, key_inputs = sess.run([image_s, image_f])
@@ -214,12 +210,55 @@ def main():
 
         # Write result image
         mask = sess.run(pred_img, feed_dict={output: preds})
-        misc.imsave(args.save_dir + 'mask' + str(step) + '.png', mask[0])
-        print('#' * 32)
-        print(type(mask))
+        misc.imsave(join(save_dir, 'mask' + str(step) + '.png'), mask[0])
+        # print('#' * 32)
+        # print(type(mask))
 
-    print('\nFinish!')
+    print('\nFinished %s!' % img_list)
     print("segmentation steps:", seg_step, "flow steps:", flow_step)
+    print('\n')
+
+
+def main():
+    args = get_arguments()
+    print(args)
+
+    skipped = open('skipped.txt', 'w')
+    errors = open('errors.txt', 'w')
+
+    video_img_lists = [f for f in listdir(args.data_list) if isfile(join(args.data_list, f))]
+    for img_list in video_img_lists:
+        save_dir = join(args.save_dir, img_list.split('_image')[0])
+        if isdir(save_dir):
+            print('=' * 30 + '>Skipping %s' % save_dir)
+            skipped.write(save_dir + '\n')
+            continue
+
+        img_list = join(args.data_list, img_list)
+
+        print(img_list)
+        num_steps = 0
+        with open(img_list, 'r') as f:
+            for l in f:
+                # print(l.strip())
+                if l.strip() not in ['\n', '\r\n']:
+                    num_steps += 1
+
+        title = '#' * 15 + save_dir + '#' * 15
+        print('#' * len(title))
+        print(title)
+        print('#' * len(title))
+        # print(num_steps)
+
+        try:
+            run(img_list, save_dir, num_steps, args)
+        except Exception as e:
+            print('=' * 30 + '>%s failed. See errors.txt' % save_dir)
+            errors.write(title + '\n')
+            errors.write(str(e) + '\n')
+
+    skipped.close()
+    errors.close()
 
 
 if __name__ == '__main__':

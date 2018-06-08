@@ -1,0 +1,45 @@
+/home/shared/anaconda3/lib/python3.6/site-packages/h5py/__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+Namespace(data_dir='/home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/train_color/', data_list='list/wad_train/', decision_from='./checkpoint/', dynamic=False, overlap=64, restore_from='./checkpoint/', save_dir='./video/train/', target=90.0)
+==============================>Skipping ./video/train/road01_cam_6_video_2
+==============================>Skipping ./video/train/road01_cam_6_video_10
+==============================>Skipping ./video/train/road01_cam_5_video_10
+==============================>Skipping ./video/train/road03_cam_5_video_13
+==============================>Skipping ./video/train/road03_cam_6_video_5
+==============================>Skipping ./video/train/road02_cam_5_video_4
+==============================>Skipping ./video/train/road01_cam_5_video_4
+==============================>Skipping ./video/train/road01_cam_6_video_4
+==============================>Skipping ./video/train/road03_cam_6_video_13
+==============================>Skipping ./video/train/road03_cam_6_video_3
+==============================>Skipping ./video/train/road03_cam_6_video_9
+==============================>Skipping ./video/train/road01_cam_5_video_8
+==============================>Skipping ./video/train/road03_cam_5_video_5
+==============================>Skipping ./video/train/road03_cam_6_video_17
+==============================>Skipping ./video/train/road03_cam_6_video_7
+==============================>Skipping ./video/train/road03_cam_6_video_11
+==============================>Skipping ./video/train/road02_cam_6_video_7
+==============================>Skipping ./video/train/road02_cam_6_video_4
+list/wad_train/road01_cam_5_video_18_image_list_train_img_list.txt
+#################################################################
+###############./video/train/road01_cam_5_video_18###############
+#################################################################
+==============================>./video/train/road01_cam_5_video_18 failed. See errors.txt
+Traceback (most recent call last):
+  File "inference.py", line 254, in main
+    run(img_list, save_dir, num_steps, args)
+  File "inference.py", line 79, in run
+    image_s, image_f = inputs(args.data_dir, img_list, 1, input_size, args.overlap)
+  File "/home/rohana/project/DVSNet_remote/tools/image_reader.py", line 100, in inputs
+    image_list = read_labeled_image_list(data_dir, data_list)
+  File "/home/rohana/project/DVSNet_remote/tools/image_reader.py", line 26, in read_labeled_image_list
+    raise ValueError('Failed to find file: ' + image)
+ValueError: Failed to find file: /home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/train_color/170908_082458410_Camera_5.jpg
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "inference.py", line 265, in <module>
+    main()
+  File "inference.py", line 258, in main
+    errors.write(e)
+TypeError: write() argument must be str, not ValueError

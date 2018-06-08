@@ -1,0 +1,4 @@
+###############./video/train/road01_cam_5_video_18###############
+Failed to find file: /home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/train_color/170908_082458410_Camera_5.jpg
+###############./video/train/road01_cam_6_video_18###############
+Failed to find file: /home/rohana/.kaggle/competitions/cvpr-2018-autonomous-driving/train_color/170908_082458410_Camera_6.jpg

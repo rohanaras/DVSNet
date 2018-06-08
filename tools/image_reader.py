@@ -23,7 +23,7 @@ def read_labeled_image_list(data_dir, data_list):
 
         image = data_dir+image
         if not tf.gfile.Exists(image):
-            raise ValueError('Failed to find file: ' + image1)
+            raise ValueError('Failed to find file: ' + image)
 
         images.append(image)
     f.close()
